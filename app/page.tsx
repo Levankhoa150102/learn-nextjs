@@ -6,6 +6,7 @@ export default function Home() {
         <div>
           <p>SOME FUNCTION {StandardizeName("Some Name")}, Here is main change version 2</p>
           <p>Test Github Action</p>
+          <p>Add from testing branch</p>
         </div>
     </>
   );
