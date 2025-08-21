@@ -1,5 +1,3 @@
-import StandardizeName from "@/utils/StandlizeName";
-
 export default function Home() {
   return (
     <>
