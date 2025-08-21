@@ -14,6 +14,9 @@ export default function Home() {
 
             <li>Item 6</li> {/*Add by test2 */}
             <li>Item 7</li> {/*Add by test2 */}
+
+            <li>Item 8</li> {/*Add by testing */}
+            <li>Item 9</li> {/*Add by testing */}
           </ul>
         </div>
     </>
