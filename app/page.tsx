@@ -1,3 +1,4 @@
+import CheckBox from "@/components/CheckBox";
 import StandardizeName from "@/utils/StandlizeName";
 
 export default function Home() {
@@ -8,7 +9,23 @@ export default function Home() {
           <p>Test Github Action</p>
           <p>Do action to fix bug on main</p>
           <p>Fix quick bug in hear</p>
+<<<<<<< HEAD
           <p>Fix quick bug in header 2</p>
+=======
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <p>hihi ahha</p>
+          <CheckBox id="checkbox1" label="CheckBox 1" />
+          <CheckBox id="checkbox2" label="CheckBox 2" />
+>>>>>>> cd11e8b (fix)
         </div>
     </>
   );
