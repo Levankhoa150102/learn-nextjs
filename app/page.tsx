@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
         <div>
-          <p>SOME FUNCTION {StandardizeName("Some Name")} by merge</p>
+          <p>SOME FUNCTION {StandardizeName("Some Name")}, Here is main change</p>
         </div>
     </>
   );
