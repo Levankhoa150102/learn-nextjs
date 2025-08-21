@@ -5,22 +5,6 @@ export default function Home() {
     <>
         <div>
           <p>SOME FUNCTION {StandardizeName("Some Name")}, Here is main change version 2</p>
-          <ul>
-            <li>Item 1</li>
-            <li>Item 2</li>
-            <li>Item 3</li>
-            <li>Item 4</li>
-            <li>Item 5</li>
-
-            <li>Item 6</li> {/*Add by test2 */}
-            <li>Item 7</li> {/*Add by test2 */}
-
-            <li>Item 8</li> {/*Add by testing */}
-            <li>Item 9</li> {/*Add by testing */}
-
-            <li>Item 10</li> {/*Add by main */}
-            <li>Item 11</li> {/*Add by main */}
-          </ul>
         </div>
     </>
   );
