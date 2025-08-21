@@ -20,6 +20,9 @@ export default function Home() {
 
             <li>Item 10</li> {/*Add by main */}
             <li>Item 11</li> {/*Add by main */}
+
+            <li>Item 11</li> {/*Add by main */}
+            <li>Item 11</li> {/*Add by main */}
           </ul>
         </div>
     </>
