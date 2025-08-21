@@ -1,8 +1,10 @@
+import StandardizeName from "@/utils/StandlizeName";
+
 export default function Home() {
   return (
     <>
         <div>
-          <h1>KK</h1>
+          <p>SOME FUNCTION {StandardizeName("Some Name")}</p>
         </div>
     </>
   );
