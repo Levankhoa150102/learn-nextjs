@@ -8,6 +8,7 @@ export default function Home() {
           <p>Test Github Action</p>
           <p>Do action to fix bug on main</p>
           <p>Fix quick bug in hear</p>
+          <p>hihi ahha</p>
         </div>
     </>
   );
