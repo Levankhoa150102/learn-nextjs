@@ -5,6 +5,7 @@ export default function Home() {
     <>
         <div>
           <p>SOME FUNCTION {StandardizeName("Some Name")}, Here is main change version 2</p>
+          <p>hihi ahha</p>
         </div>
     </>
   );
