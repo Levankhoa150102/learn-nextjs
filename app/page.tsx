@@ -2,7 +2,10 @@
 export default function Home() {
   return (
     <>
-        <h1>KK</h1>
+        <div>
+          <h1>KK</h1>
+          <h2>Subheading</h2>
+        </div>
     </>
   );
 }
