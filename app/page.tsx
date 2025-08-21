@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <>
         <div>
-          <p>From the day we separate each other, I knew you were the one.</p>
+          <p>FIX SOME BUG AND READY TO REBASE</p>
         </div>
     </>
   );
