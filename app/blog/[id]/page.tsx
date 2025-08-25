@@ -1,7 +1,7 @@
-import BlogDetail from '@/components/BlogDetail';
+import BlogDetail from '@/pages/Blog/BlogDetail';
 
 interface BlogPageDetailProps {
-    params: { id: string };
+    params: Promise<{ id: string }>
 }
 
 export default async function BlogPageDetail(props:  BlogPageDetailProps) {
