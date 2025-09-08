@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "$2b$10$adminHashedPassword",
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "username": "user",
+    "password": "$2b$10$userHashedPassword",
+    "role": "user"
+  },
+  {
+    "id": 3,
+    "username": "khoalee",
+    "password": "$2b$10$VWKJqQeKDl/Waewgt7hRLe49V.3/.EZnm8gkdlBLLrSDrhHWx1nOq",
+    "role": "user"
+  },
+  {
+    "id": 4,
+    "username": "khoaleee",
+    "password": "$2b$10$dh.Jzsn0Di0tcYx02wACNewwLLpHlNRpk5IeLnFEfM/5PGzAM73XW",
+    "role": "admin"
+  }
+]

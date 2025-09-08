@@ -1,61 +1,50 @@
 'use client'
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
-import { useEffect, useState } from "react";
-type Post = {
-  id: number;
-  title: string;
-  content: string;
-}
+
 export default function Home() {
-  const [post, setPost] = useState<Post[]>([]);
-
-  async function fetchPosts() {
-    const response = await fetch("/api/posts");
-    const data = await response.json();
-    setPost(data);
-  }
-
-  async function createPosts(title: string, content: string) {
-    const response = await fetch("/api/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content })
-    });
-    await response.json();
-    fetchPosts(); 
-  }
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const title = (e.currentTarget.elements.namedItem("title") as HTMLInputElement)?.value;
-    const content = (e.currentTarget.elements.namedItem("content") as HTMLTextAreaElement)?.value;
-    createPosts(title, content);
-    e.currentTarget.reset();
-  }
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="title" placeholder="Title" />
-        <textarea name="content" placeholder="Content"></textarea>
-        <button type="submit">Create Post</button>
-      </form>
+      <header className="flex items-center justify-between px-8 py-4 bg-gradient-to-r from-blue-500 to-green-400 shadow">
+        <h1 className="text-2xl font-bold text-white">Welcome to the Blog Platform</h1>
+        <div>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-white font-medium">{user.username}</span>
+              <button
+                onClick={logout}
+                className="bg-white text-blue-600 px-4 py-1 rounded font-semibold hover:bg-blue-100 transition"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className='space-x-4'>
+              <button
+                onClick={() => router.push('/login')}
+                className="bg-white text-blue-600 px-4 py-1 rounded font-semibold hover:bg-blue-100 transition"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => router.push('/register')}
+                className="bg-white text-blue-600 px-4 py-1 rounded font-semibold hover:bg-blue-100 transition"
+              >
+                Register
+              </button>
+            </div>
 
-      <div>
-        <h1>View All Posts</h1>
-        <ul>
-          {post.map((p) => (
-            <li key={p.id}>
-              <h2>{p.title}</h2>
-              <p>{p.content}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
+          )}
+        </div>
+      </header>
+      <main className="max-w-2xl mx-auto mt-8 text-center">
+        <h2 className="text-xl font-semibold mb-4">Explore the latest posts and share your thoughts!</h2>
+
+      </main>
     </>
   );
 }
