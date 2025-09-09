@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 
 interface AuthFormProps {
   mode: 'login' | 'register';
@@ -23,15 +24,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
       } else {
         await register(username, password, role);
       }
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    } catch (err) {
+      setError((err as Error).message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-16 bg-white p-8 rounded shadow-lg space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-md w-[400px] mx-auto mt-16 bg-white p-8 rounded shadow-lg space-y-6">
       <h2 className="text-2xl font-bold text-center mb-4">{mode === 'login' ? 'Sign In' : 'Register'}</h2>
       {error && <div className="bg-red-100 text-red-700 p-2 rounded">{error}</div>}
       <div>
@@ -53,6 +54,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           required
         />
       </div>
+
       {mode === 'register' && (
         <div>
           <label className="block mb-1 font-medium">Role</label>
@@ -73,6 +75,21 @@ export default function AuthForm({ mode }: AuthFormProps) {
       >
         {loading ? 'Processing...' : mode === 'login' ? 'Sign In' : 'Register'}
       </button>
+      {mode === 'login' ? (
+        <p className="text-center text-sm">
+          Don&#39;t have an account?{' '}
+          <Link href="/register" className="text-blue-600 hover:underline">
+            Register
+          </Link>
+        </p>
+      ) : (
+        <p className="text-center text-sm">
+          Already have an account?{' '}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Sign In
+          </Link>
+        </p>
+      )}
     </form>
   );
 }

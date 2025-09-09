@@ -11,7 +11,7 @@ export default function LoginPage() {
   React.useEffect(() => {
     if (user) {
       if (user.role === 'admin') router.replace('/admin/dashboard');
-      else router.replace('/user/item-list');
+      else router.replace('/user/dashboard');
     }
   }, [user, router]);
 

@@ -2,6 +2,7 @@
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { Spin } from 'antd';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -23,7 +24,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   }, [user, loading, allowedRoles, router]);
 
   if (loading || !user || !allowedRoles.includes(user.role)) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return <Spin  className="flex items-center justify-center h-screen text-blue-700" size="large" />;
   }
 
   return <>{children}</>;
