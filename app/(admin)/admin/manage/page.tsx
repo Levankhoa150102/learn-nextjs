@@ -1,10 +1,11 @@
 'use client'
 import AdminLayout from '@/components/Layout/AdminLayout';
+import UserModal from '@/components/UserModal';
+import { User } from '@/types/userType';
 import { ROLES } from '@/utils/roles';
 import { useUserStore } from '@/zustand/userStore';
+import { Button, Popconfirm, Table } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Table, Button } from 'antd';
-import { User } from '@/types/userType';
 
 export default function UserManagePage() {
   const { users, fetchUsers, deleteUser } = useUserStore();
@@ -26,8 +27,16 @@ export default function UserManagePage() {
     }
   }, [deleteUser]);
 
+  const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({ current: 1, pageSize: 5 });
 
   const columns = useMemo(() => [
+    {
+      title: 'No.',
+      key: 'no',
+      render: (_: unknown, __: unknown, index: number) =>
+        (pagination.current - 1) * pagination.pageSize + index + 1,
+      width: 60,
+    },
     {
       title: 'ID',
       dataIndex: 'id',
@@ -48,18 +57,37 @@ export default function UserManagePage() {
       key: 'actions',
       align: 'center' as const,
       render: (_: unknown, record: User) => (
-        <Button
-          danger
-          onClick={() => handleDeleteUser(record.id)}
-          loading={loading}
-          disabled={loading}
+        <Popconfirm
+          title="Delete the user"
+          description="Are you sure to delete this user?"
+          okText="Yes"
+          cancelText="No"
+          onConfirm={() => handleDeleteUser(record.id)}
+          onPopupClick={e => e.stopPropagation()}
         >
-          Delete
-        </Button>
+          <Button
+            danger
+            onClick={e => e.stopPropagation()}
+          >
+            Delete
+          </Button>
+        </Popconfirm>
+
       ),
     },
-  ], [handleDeleteUser]); ;
+  ], [handleDeleteUser, pagination]);
 
+  const [openActionModal, setOpenActionModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User>()
+  const handleAction = (record: User) => {
+    setOpenActionModal(true);
+    setSelectedUser(record);
+  };
+
+  const paginationConfig = useMemo(() => ({
+    showTotal: (total: number, range: [number, number]) =>
+      `${range[0]}-${range[1]} of ${total} users`,
+  }), []);
 
   return (
     <AdminLayout>
@@ -69,10 +97,23 @@ export default function UserManagePage() {
 
       <Table
         dataSource={users.filter(userItem => userItem?.role !== ROLES.ADMIN)}
+        className='cursor-pointer'
         columns={columns}
         rowKey="id"
-        pagination={false}
+        loading={loading}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          onChange: (page, pageSize) => setPagination({ current: page, pageSize }),
+          ...paginationConfig
+        }}
+        onRow={(record) => ({
+          onClick: () => {
+            handleAction(record);
+          },
+        })}
       />
+      {openActionModal && <UserModal user={selectedUser} open={openActionModal} onClose={() => setOpenActionModal(false)} />}
     </AdminLayout>
   );
 }

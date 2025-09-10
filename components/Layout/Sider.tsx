@@ -2,9 +2,10 @@ import { useAuth } from '@/context/AuthContext';
 import { ROLES } from '@/utils/roles';
 import {
     DesktopOutlined,
-    FileOutlined,
+    LineChartOutlined,
+    OrderedListOutlined,
     PieChartOutlined,
-    TeamOutlined, UserOutlined
+    UserOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, MenuProps } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
@@ -31,15 +32,17 @@ function getItem(
 const adminItems: MenuItem[] = [
     getItem('Dashboard', '/admin/dashboard', <PieChartOutlined />),
     getItem('Management', '/admin/manage', <DesktopOutlined />),
-    getItem('Statistics', '/admin/statistic', <UserOutlined />),
-    getItem('Team', '/admin/team', <TeamOutlined />, [getItem('Team 1', '/admin/team/1'), getItem('Team 2', '/admin/team/2')]),
-    getItem('Files', '/admin/files', <FileOutlined />),
+    getItem('Statistics', '/admin/statistic', <LineChartOutlined />),
+    // getItem('Team', '/admin/team', <TeamOutlined />, [getItem('Team 1', '/admin/team/1'), getItem('Team 2', '/admin/team/2')]),
+    // getItem('Files', '/admin/files', <FileOutlined />),
+    getItem('Profile', '/admin/profile', <UserOutlined />),
 ];
 
 const userItems: MenuItem[] = [
     getItem('Dashboard', '/user/dashboard', <PieChartOutlined />),
     getItem('Item List', '/user/item-list', <DesktopOutlined />),
-    getItem('Wish List', '/user/wish-list', <UserOutlined />),
+    getItem('Wish List', '/user/wish-list', <OrderedListOutlined />),
+    getItem('Profile', '/user/profile', <UserOutlined />),
 ];
 
 function AppSider() {

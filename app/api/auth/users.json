@@ -12,12 +12,6 @@
     "role": "admin"
   },
   {
-    "id": 1757392552709,
-    "username": "newuser1",
-    "password": "$2b$10$YlO2F0KhcH/e4PNcRc6jh.vwg27HtpmzcEU26REL6g4js71CWYf76",
-    "role": "user"
-  },
-  {
     "id": 1757392552711,
     "username": "newuser3",
     "password": "$2b$10$YlO2F0KhcH/e4PNcRc6jh.vwg27HtpmzcEU26REL6g4js71CWYf76",
@@ -42,21 +36,9 @@
     "role": "user"
   },
   {
-    "id": 1757404579034,
-    "username": "baku",
-    "password": "$2b$10$llqBDcQ.Zd4Cdt7GoiDxTuh4nysPurhphpIiDQ4eOLMg1KV7nBC3.",
-    "role": "user"
-  },
-  {
     "id": 1757408860363,
     "username": "ban",
     "password": "$2b$10$THwMccnn3al5LuDFnkA21Ok/0G.a6lbuvjlUKk6Dr61YYetnSlr5C",
-    "role": "user"
-  },
-  {
-    "id": 1757414054385,
-    "username": "khoalv",
-    "password": "$2b$10$Eky4VyoiluK1wKGX5FXwy.YB0Nmyizi3LbKAWow/rLemt//fHerXC",
     "role": "user"
   }
 ]

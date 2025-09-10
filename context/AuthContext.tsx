@@ -1,4 +1,5 @@
 'use client';
+import api from '@/utils/api';
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 interface User {
@@ -24,13 +25,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function fetchProfile() {
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/profile');
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-      } else {
-        setUser(null);
-      }
+      const res = await api.get('/profile');
+      setUser(res.data.user);
+    //   if (res.ok) {
+    //     const data = await res.json();
+    //     setUser(data.user);
+    //   } else {
+    //     setUser(null);
+    //   }
     } catch {
       setUser(null);
     } finally {
@@ -44,14 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(username: string, password: string) {
     setLoading(true);
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setUser(data.user);
+    const res = await api.post('/login', { username, password });
+    if (res) {
+      setUser(res.data.user);
     } else {
       setUser(null);
       throw new Error('Invalid credentials');
@@ -61,14 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function register(username: string, password: string, role: string) {
     setLoading(true);
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, role }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setUser(data.user);
+    const res = await api.post('/register', { username, password, role });
+    if (res) {
+      setUser(res.data.user);
     } else {
       setUser(null);
       throw new Error('Registration failed');
@@ -78,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function logout() {
     setLoading(true);
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await api.post('/logout');
     setUser(null);
     setLoading(false);
   }
