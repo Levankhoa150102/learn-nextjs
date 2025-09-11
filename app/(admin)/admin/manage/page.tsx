@@ -1,4 +1,5 @@
 'use client'
+import ChatModal from '@/components/ChatModal';
 import AdminLayout from '@/components/Layout/AdminLayout';
 import UserModal from '@/components/UserModal';
 import { User } from '@/types/userType';
@@ -6,6 +7,7 @@ import { ROLES } from '@/utils/roles';
 import { useUserStore } from '@/zustand/userStore';
 import { Button, Popconfirm, Table } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { BsChatDots } from 'react-icons/bs';
 
 export default function UserManagePage() {
   const { users, fetchUsers, deleteUser } = useUserStore();
@@ -75,9 +77,25 @@ export default function UserManagePage() {
 
       ),
     },
+    {
+      title: 'Chats',
+      key: 'chats',
+      align: 'center' as const,
+      render: (_, record: User) => (
+        <div className='flex justify-center'>
+          <div className='border rounded-full p-2 hover:bg-blue-100 cursor-pointer'
+          onClick={e => { e.stopPropagation(); setOpenChatModal(true);setSelectedUser(record); }}
+          >
+
+          <BsChatDots size={25} className='text-blue-700'/>
+          </div>
+        </div>
+      ),
+    },
   ], [handleDeleteUser, pagination]);
 
   const [openActionModal, setOpenActionModal] = useState(false);
+  const [openChatModal, setOpenChatModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User>()
   const handleAction = (record: User) => {
     setOpenActionModal(true);
@@ -114,6 +132,7 @@ export default function UserManagePage() {
         })}
       />
       {openActionModal && <UserModal user={selectedUser} open={openActionModal} onClose={() => setOpenActionModal(false)} />}
+      {openChatModal && <ChatModal user={selectedUser} open={openChatModal} onClose={() => setOpenChatModal(false)} messages={[]} onSend={()=>{}}/>}
     </AdminLayout>
   );
 }

@@ -12,12 +12,6 @@
     "role": "admin"
   },
   {
-    "id": 1757392552711,
-    "username": "newuser3",
-    "password": "$2b$10$YlO2F0KhcH/e4PNcRc6jh.vwg27HtpmzcEU26REL6g4js71CWYf76",
-    "role": "user"
-  },
-  {
     "id": 1757402794190,
     "username": "khoalee",
     "password": "$2b$10$RChbIW6SMXA18RrQAIBLJuH5EcXUU58MIF5iR5BzGH051HoH0ENtK",
@@ -39,6 +33,12 @@
     "id": 1757408860363,
     "username": "ban",
     "password": "$2b$10$THwMccnn3al5LuDFnkA21Ok/0G.a6lbuvjlUKk6Dr61YYetnSlr5C",
+    "role": "user"
+  },
+  {
+    "id": 1757582135499,
+    "username": "buddy",
+    "password": "$2b$10$EAPHEnoFcJKnZylLExaEgO3kezrCaJlzOt9OkjfqTsJjBd6iqbdR.",
     "role": "user"
   }
 ]
