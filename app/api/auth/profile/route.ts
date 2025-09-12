@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const USERS_PATH = path.join(process.cwd(), 'app/api/auth/users.json');
+type JwtPayload = { id: string; username: string; role: string };
 
 export async function GET(req: NextRequest) {
   const accessToken = req.cookies.get('accessToken')?.value;
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: 'No access token' }, { status: 401 });
   }
   try {
-    const payload = verifyAccessToken(accessToken) as any;
+    const payload = verifyAccessToken(accessToken) as JwtPayload;
     const usersRaw = await fs.readFile(USERS_PATH, 'utf-8');
     const users = JSON.parse(usersRaw);
     const user = users.find((u: { id: string }) => u.id === payload.id);
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
     return NextResponse.json({ user: { id: user.id, username: user.username, role: user.role } });
-  } catch (e) {
+  } catch {
     return NextResponse.json({ message: 'Invalid access token' }, { status: 401 });
   }
 }

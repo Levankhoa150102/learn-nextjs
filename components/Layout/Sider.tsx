@@ -61,7 +61,8 @@ function AppSider() {
 
     const selectedKeys = items
         .map(item => item?.key as string)
-        .filter(key => pathname === key)
+        .filter(key => pathname?.includes(key))
+
 
     return (
         <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
