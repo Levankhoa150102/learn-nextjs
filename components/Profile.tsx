@@ -1,5 +1,6 @@
 'use client';
 import { useAuth } from '@/context/AuthContext';
+// import { useSession } from 'next-auth/react';
 import React from 'react';
 
 function Profile() {
@@ -11,7 +12,7 @@ function Profile() {
                 <div className="space-y-4">
                     <div className="flex items-center gap-4">
                         <span className="font-semibold text-gray-700">Username:</span>
-                        <span className="text-lg text-gray-900">{user.username}</span>
+                        <span className="text-lg text-gray-900">{user.name}</span>
                     </div>
                     <div className="flex items-center gap-4">
                         <span className="font-semibold text-gray-700">Role:</span>

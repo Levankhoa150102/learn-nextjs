@@ -8,7 +8,7 @@ interface UserStore {
   users: User[];
   fetchUsers: () => Promise<void>;
   addUser: (user: Omit<User, 'id'>) => Promise<void>;
-  deleteUser: (id: number) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
 }
 
 export const useUserStore = create<UserStore>((set) => ({

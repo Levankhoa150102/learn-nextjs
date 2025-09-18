@@ -1,20 +1,18 @@
 'use client';
+import { User } from '@/types/userType';
 import api from '@/utils/api';
+import { useSession } from 'next-auth/react';
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
-interface User {
-  id: number;
-  username: string;
-  role: string;
-}
 
-interface AuthContextType {
+
+type AuthContextType = {
   user: User | null;
   loading: boolean;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string, role: string) => Promise<void>;
   logout: () => Promise<void>;
-}
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,27 +20,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function fetchProfile() {
-    setLoading(true);
-    try {
-      const res = await api.get('/profile');
-      setUser(res.data.user);
-    //   if (res.ok) {
-    //     const data = await res.json();
-    //     setUser(data.user);
-    //   } else {
-    //     setUser(null);
-    //   }
-    } catch {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { data: session, status } = useSession();
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    setLoading(status === 'loading');
+    if (session?.user) {
+      setUser(session.user as User);
+    } else {
+      setUser(null);
+    }
+  }, [session, status]);
+  
 
   async function login(username: string, password: string) {
     setLoading(true);

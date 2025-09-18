@@ -40,7 +40,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ open, onClose, user, messages, on
       open={open}
       onCancel={onClose}
       footer={null}
-      title={<span className="text-lg font-bold text-blue-700">Chat with {user?.username}</span>}
+      title={<span className="text-lg font-bold text-blue-700">Chat with {user?.name}</span>}
       centered
       width={400}
     >
@@ -52,11 +52,11 @@ const ChatModal: React.FC<ChatModalProps> = ({ open, onClose, user, messages, on
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`flex ${msg.sender === user?.username ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${msg.sender === user?.name ? 'justify-end' : 'justify-start'}`}
             >
               <div
                 className={`px-3 py-2 rounded-lg max-w-xs break-words shadow text-sm ${
-                  msg.sender === user?.username
+                  msg.sender === user?.name
                     ? 'bg-blue-500 text-white'
                     : 'bg-white text-gray-800 border'
                 }`}

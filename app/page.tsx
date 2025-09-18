@@ -14,7 +14,7 @@ export default function Home() {
         <div>
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-white font-medium">{user.username}</span>
+              <span className="text-white font-medium">{user.name}</span>
               <button
                 onClick={logout}
                 className="bg-white text-blue-600 px-4 py-1 rounded font-semibold hover:bg-blue-100 transition"

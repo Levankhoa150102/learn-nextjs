@@ -1,39 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { prisma } from '@/configurations/prisma';
 import bcrypt from 'bcryptjs';
-import { signAccessToken, signRefreshToken } from '@/utils/jwt';
-import { ROLES } from '@/utils/roles';
-
-const USERS_PATH = path.join(process.cwd(), 'app/api/auth/users.json');
+// import bcrypt from 'bcryptjs';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const { username, password, role } = await req.json();
   if (!username || !password || !role) {
-    return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
-  if (![ROLES.ADMIN, ROLES.USER].includes(role)) {
-    return NextResponse.json({ message: 'Invalid role' }, { status: 400 });
+  const existing = await prisma.user.findFirst({ where: { name: username } });
+  if (existing) {
+    return NextResponse.json({ error: 'Username already exists' }, { status: 409 });
   }
-  const usersRaw = await fs.readFile(USERS_PATH, 'utf-8');
-  const users = JSON.parse(usersRaw);
-  if (users.find((u: { username: string }) => u.username === username)) {
-    return NextResponse.json({ message: 'Username already exists' }, { status: 409 });
-  }
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = {
-    id: Date.now(),
-    username,
-    password: hashedPassword,
-    role,
-  };
-  users.push(newUser);
-  await fs.writeFile(USERS_PATH, JSON.stringify(users, null, 2));
-  // Issue tokens
-  const accessToken = signAccessToken({ id: newUser.id, username, role });
-  const refreshToken = signRefreshToken({ id: newUser.id, username, role });
-  const res = NextResponse.json({ user: { id: newUser.id, username, role } });
-  res.cookies.set('accessToken', accessToken, { httpOnly: true, sameSite: 'lax', path: '/' });
-  res.cookies.set('refreshToken', refreshToken, { httpOnly: true, sameSite: 'lax', path: '/' });
-  return res;
+  const hashed = await bcrypt.hash(password, 10);
+  const user = await prisma.user.create({
+    data: { name: username, email: `${username}@example.com`, role, password: hashed },
+  });
+  return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } }, { status: 201 });
 }

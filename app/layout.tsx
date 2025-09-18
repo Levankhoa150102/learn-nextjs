@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import AntdProvider from "@/providers/AntdProvider";
+import { SessionProvider } from "next-auth/react";
 
 
 
@@ -18,11 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AntdProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-        </AntdProvider>
+        <SessionProvider>
+
+          <AntdProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </AntdProvider>
+        </SessionProvider>
 
       </body>
     </html>

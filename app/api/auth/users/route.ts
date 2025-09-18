@@ -1,11 +1,16 @@
-import fs from 'fs/promises';
-import { NextResponse } from 'next/server';
-import path from 'path';
 
-const USERS_PATH = path.join(process.cwd(), 'app/api/auth/users.json');
+import { NextResponse } from 'next/server';
+import { prisma } from '@/configurations/prisma';
 
 export async function GET() {
-  const usersRaw = await fs.readFile(USERS_PATH, 'utf-8');
-  const users = JSON.parse(usersRaw);
-  return NextResponse.json({ users: users.map((u: { id: number; username: string; role: string }) => ({ id: u.id, username: u.username, role: u.role })) });
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+  return NextResponse.json({ users });
 }

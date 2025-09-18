@@ -1,8 +1,10 @@
 'use client';
-import React from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
 import { Spin } from 'antd';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+
+
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,8 +12,9 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, loading } = useAuth();
   const router = useRouter();
+  const { user, loading } = useAuth();
+
 
   React.useEffect(() => {
     if (!loading) {
@@ -21,10 +24,14 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
         router.replace('/403');
       }
     }
-  }, [user, loading, allowedRoles, router]);
+  }, [loading, allowedRoles, router, user]);
 
   if (loading || !user || !allowedRoles.includes(user.role)) {
-    return <Spin  className="flex items-center justify-center h-screen text-blue-700" size="large" />;
+    return (
+      <div className='h-screen flex items-center justify-center'>
+        <Spin className="text-blue-700" size="large" />
+      </div>
+    );
   }
 
   return <>{children}</>;

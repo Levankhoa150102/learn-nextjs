@@ -1,26 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { verifyAccessToken } from '@/utils/jwt';
-import fs from 'fs/promises';
-import path from 'path';
 
-const USERS_PATH = path.join(process.cwd(), 'app/api/auth/users.json');
-type JwtPayload = { id: string; username: string; role: string };
+import { prisma } from '@/configurations/prisma';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
-  const accessToken = req.cookies.get('accessToken')?.value;
-  if (!accessToken) {
-    return NextResponse.json({ message: 'No access token' }, { status: 401 });
+export async function GET() {
+  const user = await prisma.user.findFirst();
+  if (!user) {
+    return NextResponse.json({ message: 'User not found' }, { status: 404 });
   }
-  try {
-    const payload = verifyAccessToken(accessToken) as JwtPayload;
-    const usersRaw = await fs.readFile(USERS_PATH, 'utf-8');
-    const users = JSON.parse(usersRaw);
-    const user = users.find((u: { id: string }) => u.id === payload.id);
-    if (!user) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
-    }
-    return NextResponse.json({ user: { id: user.id, username: user.username, role: user.role } });
-  } catch {
-    return NextResponse.json({ message: 'Invalid access token' }, { status: 401 });
-  }
+  return NextResponse.json({ user: {...user} });
 }

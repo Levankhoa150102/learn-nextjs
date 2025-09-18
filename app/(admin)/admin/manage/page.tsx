@@ -18,7 +18,7 @@ export default function UserManagePage() {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleDeleteUser = useCallback(async (id: number) => {
+  const handleDeleteUser = useCallback(async (id: string) => {
     setLoading(true);
     try {
       await deleteUser(id);
@@ -46,7 +46,7 @@ export default function UserManagePage() {
     },
     {
       title: 'Username',
-      dataIndex: 'username',
+      dataIndex: 'name',
       key: 'username',
     },
     {
