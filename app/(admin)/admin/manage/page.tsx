@@ -40,9 +40,9 @@ export default function UserManagePage() {
       width: 60,
     },
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
       title: 'Username',

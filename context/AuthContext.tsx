@@ -9,8 +9,8 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  login: (username: string, password: string) => Promise<void>;
-  register: (username: string, password: string, role: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -24,6 +24,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setLoading(status === 'loading');
+    if (status !== 'authenticated') {
+      setUser(null);
+      return;
+    }
     if (session?.user) {
       setUser(session.user as User);
     } else {
@@ -32,9 +36,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [session, status]);
   
 
-  async function login(username: string, password: string) {
+  async function login(email: string, password: string) {
     setLoading(true);
-    const res = await api.post('/login', { username, password });
+    const res = await api.post('/login', { email, password });
     if (res) {
       setUser(res.data.user);
     } else {
@@ -44,9 +48,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }
 
-  async function register(username: string, password: string, role: string) {
+  async function register(email: string, password: string) {
     setLoading(true);
-    const res = await api.post('/register', { username, password, role });
+    const res = await api.post('/register', { email, password });
     if (res) {
       setUser(res.data.user);
     } else {

@@ -12,11 +12,11 @@ function UserModal({ user, open, onClose }: UserModalProps) {
             <div className="space-y-4 p-2">
                 <div className="flex items-center gap-3">
                     <span className="font-semibold text-gray-600">User ID:</span>
-                    <span className="text-gray-900">{user?.id}</span>
+                    <span className="text-gray-900">{user?.email}</span>
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="font-semibold text-gray-600">Username:</span>
-                    <span className="text-gray-900">{user?.username}</span>
+                    <span className="text-gray-900">{user?.name}</span>
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="font-semibold text-gray-600">Role:</span>

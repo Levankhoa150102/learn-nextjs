@@ -1,8 +1,9 @@
 'use client';
+
 import { useAuth } from '@/context/AuthContext';
 import { Spin } from 'antd';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 
 
@@ -10,13 +11,12 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles: string[];
 }
-
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const router = useRouter();
   const { user, loading } = useAuth();
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading) {
       if (!user) {
         router.replace('/login');

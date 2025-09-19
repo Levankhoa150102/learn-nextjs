@@ -1,6 +1,6 @@
 
 'use client';
-// import '@ant-design/v5-patch-for-react-19';
+import '@ant-design/v5-patch-for-react-19';
 import { FC, PropsWithChildren } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { App, ConfigProvider } from 'antd';

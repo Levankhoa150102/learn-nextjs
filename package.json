@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@auth/prisma-adapter": "^2.10.0",
     "@prisma/client": "^6.16.2",
     "@reduxjs/toolkit": "^2.8.2",

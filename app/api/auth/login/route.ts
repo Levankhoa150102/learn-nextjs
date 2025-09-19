@@ -1,26 +1,40 @@
+
 import { prisma } from '@/configurations/prisma';
-import { signAccessToken, signRefreshToken } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
-// import bcrypt from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { randomBytes } from 'crypto';
 
 export async function POST(req: NextRequest) {
-  const { username, password } = await req.json();
-  if (!username || !password) {
+  const { email, password } = await req.json();
+  if (!email || !password) {
     return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
   }
-  const user = await prisma.user.findFirst({ where: { name: username } });
+  const user = await prisma.user.findFirst({ where: { email: email } });
   if (!user) {
-    return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
+    return NextResponse.json({ message: 'User not found' }, { status: 401 });
   }
   const valid = await bcrypt.compare(password, user.password ?? '');
   if (!valid) {
-    return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
+    return NextResponse.json({ message: 'Password is incorrect' }, { status: 401 });
   }
-  const accessToken = signAccessToken({ id: user.id, name: user.name, role: user.role });
-  const refreshToken = signRefreshToken({ id: user.id, name: user.name, role: user.role });
+
+  // Create a session token and store in DB
+  const sessionToken = randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+  await prisma.session.create({
+    data: {
+      sessionToken,
+      userId: user.id,
+      expires,
+    },
+  });
+
   const res = NextResponse.json({ user: { id: user.id, name: user.name, role: user.role } });
-  res.cookies.set('accessToken', accessToken, { httpOnly: true, sameSite: 'lax', path: '/' });
-  res.cookies.set('refreshToken', refreshToken, { httpOnly: true, sameSite: 'lax', path: '/' });
+  res.cookies.set('authjs.session-token', sessionToken, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    expires,
+  });
   return res;
 }
