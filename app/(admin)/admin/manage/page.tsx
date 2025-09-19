@@ -71,7 +71,7 @@ export default function UserManagePage() {
             danger
             onClick={e => e.stopPropagation()}
           >
-            Delete
+            Delete 
           </Button>
         </Popconfirm>
 
