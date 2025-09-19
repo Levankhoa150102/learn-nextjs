@@ -5,7 +5,7 @@ export async function getUsers() {
   return res.data.users;
 }
 
-export async function removeUser(id: number) {
+export async function removeUser(id: string) {
   const res = await api.delete(`/users/${id}`);
   return res.data;
 }
