@@ -9,6 +9,7 @@ import { prisma } from "@/configurations/prisma"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  trustHost: true,
   providers: [
     Google,
     GitHub,
