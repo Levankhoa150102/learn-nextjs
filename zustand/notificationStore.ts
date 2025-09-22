@@ -1,4 +1,5 @@
 import { NotificationService } from '@/services/notificationService';
+import { SendNotificationPayload } from '@/types/notificationType';
 import { create } from 'zustand';
 
 export interface Notification {
@@ -6,13 +7,16 @@ export interface Notification {
   title: string;
   message: string;
   type: 'info' | 'warning' | 'success' | 'error';
+  targetRole: string;
   isRead: boolean;
   createdAt: string;
+  updatedAt: string;
   sender: {
     id: string;
     name: string | null;
     email: string;
   };
+  userNotificationId?: string; // For individual operations
 }
 
 interface NotificationStore {
@@ -25,7 +29,7 @@ interface NotificationStore {
   markAsRead: (id: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
-  sendNotification: (data: { title: string; message: string; type: string; targetRole: string }) => Promise<void>;
+  sendNotification: (data: SendNotificationPayload) => Promise<void>;
   getUnreadCount: () => number;
 }
 
@@ -38,7 +42,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const notifications = await NotificationService.getNotifications();
-      // Ensure notifications is always an array
       const notificationsArray = Array.isArray(notifications) ? notifications : [];
       set({ notifications: notificationsArray, loading: false });
     } catch {
@@ -90,7 +93,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   sendNotification: async (data: { title: string; message: string; type: string; targetRole: string }) => {
     try {
       await NotificationService.createNotification(data);
-      // Optionally refresh notifications after sending
       await get().fetchNotifications();
     } catch  {
       set({ error: 'Failed to send notification' });
@@ -99,7 +101,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
 
   getUnreadCount: () => {
     const { notifications } = get();
-    // Ensure notifications is an array before calling filter
     return Array.isArray(notifications) ? notifications.filter(notif => !notif.isRead).length : 0;
   },
 }));

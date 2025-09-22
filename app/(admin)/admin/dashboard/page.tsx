@@ -4,12 +4,16 @@ import React from 'react';
 import { Row, Col, Card, Statistic, Typography } from 'antd';
 import { UserOutlined, BellOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { NotificationAdmin } from '@/components/NotificationAdmin';
-import { NotificationList } from '@/components/NotificationList';
 import AdminLayout from '@/components/Layout/AdminLayout';
+import { useNotificationStore } from '@/zustand/notificationStore';
+import { useUserStore } from '@/zustand/userStore';
 
 const { Title } = Typography;
 
 export default function AdminDashboard() {
+    const { notifications, getUnreadCount } = useNotificationStore();
+      const { users } = useUserStore();
+    const unreadCount = getUnreadCount();
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gray-50 p-6">
@@ -30,7 +34,7 @@ export default function AdminDashboard() {
               <Card>
                 <Statistic
                   title="Total Users"
-                  value={123}
+                  value={users.filter(user => user.role === 'user').length}
                   prefix={<UserOutlined />}
                   valueStyle={{ color: '#3f8600' }}
                 />
@@ -40,7 +44,7 @@ export default function AdminDashboard() {
               <Card>
                 <Statistic
                   title="Total Notifications"
-                  value={456}
+                  value={notifications.length}
                   prefix={<BellOutlined />}
                   valueStyle={{ color: '#1890ff' }}
                 />
@@ -50,7 +54,7 @@ export default function AdminDashboard() {
               <Card>
                 <Statistic
                   title="Read Notifications"
-                  value={389}
+                  value={notifications.length - unreadCount}
                   prefix={<CheckCircleOutlined />}
                   valueStyle={{ color: '#52c41a' }}
                 />
@@ -60,7 +64,7 @@ export default function AdminDashboard() {
               <Card>
                 <Statistic
                   title="Unread Notifications"
-                  value={67}
+                  value={unreadCount}
                   prefix={<ExclamationCircleOutlined />}
                   valueStyle={{ color: '#f5222d' }}
                 />
@@ -70,14 +74,8 @@ export default function AdminDashboard() {
 
           {/* Main Content */}
           <Row gutter={[24, 24]}>
-            {/* Send Notification Section */}
             <Col xs={24} lg={12}>
               <NotificationAdmin />
-            </Col>
-
-            {/* Notifications List Section */}
-            <Col xs={24} lg={12}>
-              <NotificationList />
             </Col>
           </Row>
         </div>

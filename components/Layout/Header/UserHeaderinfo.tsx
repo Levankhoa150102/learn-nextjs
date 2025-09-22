@@ -17,7 +17,11 @@ export default function UserHeaderinfo({ user,  setOpenLogoutConfirmAction, rout
             key: 'profile',
             icon: <ProfileOutlined />,
             label: 'Profile',
-            onClick: () => router.push(`/profile`),
+            onClick: () => {
+                if (user) {
+                    router.push(`/${user.role}/profile/`);
+                }
+            },
         },
         {
             type: 'divider',

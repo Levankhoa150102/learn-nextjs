@@ -16,3 +16,11 @@ export type Notification = {
   role: ROLES;
   avatar?: string;
 }
+
+export type SendNotificationPayload =
+  {
+    title: string;
+    message: string;
+    type: string;
+    targetRole: string
+  };

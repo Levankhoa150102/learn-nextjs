@@ -2,35 +2,49 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/configurations/prisma';
 import { auth } from '@/configurations/auth';
 
-// GET - Fetch notifications for the current user's role
+// GET - Fetch notifications for the current user
 export async function GET() {
   try {
     const session = await auth();
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { role: true }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    // Get notifications for the user's role
-    const notifications = await prisma.notification.findMany({
-      where: { 
-        targetRole: user.role 
+    // Get notifications for this user from UserNotification junction table
+    const userNotifications = await prisma.userNotification.findMany({
+      where: {
+        userId: session.user.id,
+        isDeleted: false // Only get non-deleted notifications
       },
-      orderBy: { createdAt: 'desc' },
       include: {
-        sender: {
-          select: { id: true, name: true, email: true }
+        notification: {
+          include: {
+            sender: {
+              select: { id: true, name: true, email: true }
+            }
+          }
+        }
+      },
+      orderBy: {
+        notification: {
+          createdAt: 'desc'
         }
       }
     });
+
+    // Transform the data to match frontend expectations
+    const notifications = userNotifications.map(un => ({
+      id: un.notification.id,
+      title: un.notification.title,
+      message: un.notification.message,
+      type: un.notification.type,
+      targetRole: un.notification.targetRole,
+      isRead: un.isRead, // From UserNotification table
+      createdAt: un.notification.createdAt,
+      updatedAt: un.notification.updatedAt,
+      sender: un.notification.sender,
+      userNotificationId: un.id // For individual operations
+    }));
 
     return NextResponse.json({ notifications });
   } catch (error) {
@@ -53,6 +67,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Step 1: Create the notification
     const notification = await prisma.notification.create({
       data: {
         title,
@@ -68,7 +83,35 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    return NextResponse.json({ notification }, { status: 201 });
+    // Step 2: Get target users based on role
+    let targetUsers;
+    if (targetRole === 'all') {
+      targetUsers = await prisma.user.findMany({
+        select: { id: true }
+      });
+    } else {
+      targetUsers = await prisma.user.findMany({
+        where: { role: targetRole },
+        select: { id: true }
+      });
+    }
+
+    // Step 3: Create UserNotification records for each target user
+    if (targetUsers.length > 0) {
+      await prisma.userNotification.createMany({
+        data: targetUsers.map(user => ({
+          userId: user.id,
+          notificationId: notification.id,
+          isRead: false,
+          isDeleted: false
+        }))
+      });
+    }
+
+    return NextResponse.json({ 
+      notification,
+      recipientCount: targetUsers.length
+    }, { status: 201 });
   } catch (error) {
     console.error('Error creating notification:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ConfirmModal from '../../ConfirmModal';
 import UserHeaderinfo from './UserHeaderinfo';
-import Notification from './Notification';
+import Notification from './Notification/Notification';
 
 function AppHeader() {
   const { logout, user } = useAuth();
