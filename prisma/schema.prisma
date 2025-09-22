@@ -19,6 +19,7 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
   password      String?
+  sentNotifications Notification[] @relation("NotificationSender")
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -77,4 +78,20 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@id([userId, credentialID])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  title      String
+  message    String
+  type       String   // 'info', 'warning', 'success', 'error'
+  targetRole String   // 'admin', 'user', etc.
+  isRead     Boolean  @default(false)
+  senderId   String
+  sender     User     @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@index([targetRole, createdAt])
 }

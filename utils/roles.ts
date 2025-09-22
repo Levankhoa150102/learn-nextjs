@@ -1,6 +1,6 @@
-export const ROLES = {
-  ADMIN: 'admin',
-  USER: 'user',
+export enum ROLES {
+  ADMIN = 'admin',
+  USER = 'user',
 };
 
 export function isAdmin(role: string) {

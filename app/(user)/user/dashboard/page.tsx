@@ -1,4 +1,4 @@
-import React from 'react';
+'use client';
 import UserLayout from '@/components/Layout/UserLayout';
 
 export default function UserDashboardPage() {
