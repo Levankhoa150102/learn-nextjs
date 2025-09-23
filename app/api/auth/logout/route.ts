@@ -1,5 +1,3 @@
-
-
 import { NextResponse } from 'next/server';
 import { prisma } from '@/configurations/prisma';
 import { cookies } from 'next/headers';

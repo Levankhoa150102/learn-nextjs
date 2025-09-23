@@ -24,3 +24,25 @@ export type SendNotificationPayload =
     type: string;
     targetRole: string
   };
+
+export type UserNotification = {
+  id: string;
+  userId: string;
+  notificationId: string;
+  isRead: boolean;
+  isDeleted: boolean;
+  notification: {
+    id: string;
+    title: string;
+    message: string;
+    type: string;
+    targetRole: string;
+    createdAt: Date;
+    updatedAt: Date;
+    sender: {
+      id: string;
+      name: string;
+      email: string;
+    };
+  };
+}

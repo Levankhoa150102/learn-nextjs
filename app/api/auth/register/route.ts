@@ -1,4 +1,3 @@
-
 import { prisma } from '@/configurations/prisma';
 import bcrypt from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';

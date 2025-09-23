@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Card, Statistic, Typography } from 'antd';
 import { UserOutlined, BellOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { NotificationAdmin } from '@/components/NotificationAdmin';
@@ -11,9 +11,14 @@ import { useUserStore } from '@/zustand/userStore';
 const { Title } = Typography;
 
 export default function AdminDashboard() {
-    const { notifications, getUnreadCount } = useNotificationStore();
-      const { users } = useUserStore();
-    const unreadCount = getUnreadCount();
+  const { notifications, getUnreadCount } = useNotificationStore();
+  const { users, fetchUsers } = useUserStore();
+  const unreadCount = getUnreadCount();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gray-50 p-6">

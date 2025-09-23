@@ -22,8 +22,7 @@ export default function ConfirmModal({ title, content, onConfirm, onCancel, visi
       onOk={onConfirm}
       onCancel={onCancel}
       centered
-      okText={"Confirm"}
-      cancelText={"Cancel"}
+      okText="Confirm"
     >
       <p className="text-gray-700 text-base mb-2">{content}</p>
     </Modal>

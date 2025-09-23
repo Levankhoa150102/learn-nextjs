@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/configurations/prisma';
 import { auth } from '@/configurations/auth';
+import { User } from '@/types/userType';
+import { UserNotification } from '@/types/notificationType';
 
 // GET - Fetch notifications for the current user
 export async function GET() {
@@ -33,7 +35,7 @@ export async function GET() {
     });
 
     // Transform the data to match frontend expectations
-    const notifications = userNotifications.map(un => ({
+    const notifications = userNotifications.map((un: UserNotification) => ({
       id: un.notification.id,
       title: un.notification.title,
       message: un.notification.message,
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
     // Step 3: Create UserNotification records for each target user
     if (targetUsers.length > 0) {
       await prisma.userNotification.createMany({
-        data: targetUsers.map(user => ({
+        data: targetUsers.map((user: User) => ({
           userId: user.id,
           notificationId: notification.id,
           isRead: false,
