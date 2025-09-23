@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import AppHeader from './Header';
+import AppHeader from './Header/Header';
 import { ROLES } from '@/utils/roles';
 import AppSider from './Sider';
 

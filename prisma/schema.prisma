@@ -19,6 +19,8 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
   password      String?
+  sentNotifications Notification[] @relation("NotificationSender")
+  userNotifications UserNotification[]
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -77,4 +79,40 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@id([userId, credentialID])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  title      String
+  message    String
+  type       String   // 'info', 'warning', 'success', 'error'
+  targetRole String   // 'admin', 'user', 'all' etc.
+  senderId   String
+  sender     User     @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  // Junction table relationships
+  userNotifications UserNotification[]
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@index([targetRole, createdAt])
+}
+
+model UserNotification {
+  id             String   @id @default(cuid())
+  userId         String
+  notificationId String
+  isRead         Boolean  @default(false)
+  isDeleted      Boolean  @default(false)
+  
+  // Relationships
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, notificationId])
+  @@index([userId, isDeleted, isRead])
 }

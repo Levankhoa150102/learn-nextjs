@@ -9,6 +9,7 @@ import { prisma } from "@/configurations/prisma"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  trustHost: true,
   providers: [
     Google,
     GitHub,
@@ -22,13 +23,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!credentials?.username || !credentials?.password) return null;
         const user = await prisma.user.findFirst({ where: { name: credentials.username } });
         if (!user) return null;
-        // Add your password check logic here (e.g. bcrypt.compare)
-        // For demo, assume plain text
         if (user.password !== credentials.password) return null;
         return user;
       },
     }),
   ],
+  session: {
+    strategy: 'database',
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
+  },
   callbacks: {
     async session({ session }) {
       return session;

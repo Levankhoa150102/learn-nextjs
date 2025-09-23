@@ -93,12 +93,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
             </Link>
           </p>
           <div className="mt-6 flex flex-col gap-3 items-center">
-            <button
+            {/* <button
               type="button"
               className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 font-semibold py-2 px-4 rounded shadow transition"
               onClick={() => signIn('google')}
             >
-              {/* Google SVG */}
               <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_17_40)">
                   <path d="M47.5 24.5C47.5 23.1 47.4 21.7 47.2 20.3H24.5V28.2H37.3C36.7 31.2 34.7 33.7 31.8 35.2V40.1H39.2C43.2 36.5 45.5 31.1 45.5 24.5Z" fill="#4285F4" />
@@ -113,7 +112,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 </defs>
               </svg>
               <span className="font-medium">Sign in with Google</span>
-            </button>
+            </button> */}
             <button
               type="button"
               className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded shadow transition"
