@@ -1,50 +1,18 @@
-import { useWebSocket } from '@/providers/WebSocketProvider';
 import fromNowTime from '@/utils/fromNowTime';
 import { Notification, useNotificationStore } from '@/zustand/notificationStore';
 import { CheckOutlined, CloseOutlined, EyeOutlined, MessageOutlined, WarningOutlined } from '@ant-design/icons';
 import { Avatar, Button, Empty, List, Space, Tooltip, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import NotificationViewModal from './NotificationViewModal';
 
 const { Text, Title } = Typography;
 
 
 export default function NotificationList() {
-  const { notifications, markAsRead, deleteNotification, markAllAsRead, fetchNotifications } = useNotificationStore();
-  const { socket } = useWebSocket();
+  const { notifications, markAsRead, deleteNotification, markAllAsRead } = useNotificationStore();
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Listen for real-time notifications
-  useEffect(() => {
-    if (!socket) return;
-
-    // Listen for new notifications
-    socket.on('new-notification', (notification) => {
-      console.log('📢 New notification received:', notification);
-    
-      // Refresh the notification list to get the latest data
-      fetchNotifications();
-    });
-
-    // Listen for notification updates (like mark as read)
-    socket.on('notification-updated', () => {
-      console.log('📝 Notification updated, refreshing list...');
-      fetchNotifications();
-    });
-
-    // Listen for notification deletions
-    socket.on('notification-deleted', () => {
-      console.log('🗑️ Notification deleted, refreshing list...');
-      fetchNotifications();
-    });
-
-    return () => {
-      socket.off('new-notification');
-      socket.off('notification-updated');
-      socket.off('notification-deleted');
-    };
-  }, [socket, fetchNotifications]);
 
   const handleViewNotification = (notification: Notification) => {
     setSelectedNotification(notification);

@@ -18,9 +18,7 @@ interface NextApiResponseServerIO extends NextApiResponse {
 
 const SocketHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (res.socket.server.io) {
-    console.log('Socket is already running')
   } else {
-    console.log('Socket is initializing')
     const io = new ServerIO(res.socket.server, {
       path: '/api/socket',
       cors: {
@@ -37,22 +35,18 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
     globalForSocket.socketServer = io;
 
     io.on('connection', (socket) => {
-      console.log('User connected:', socket.id)
 
       // Join user to their specific room
       socket.on('join-user-room', (userId: string) => {
         socket.join(`user-${userId}`)
-        console.log(`User ${userId} joined their room`)
       })
 
       // Join admin/role-based rooms
       socket.on('join-role-room', (role: string) => {
         socket.join(`role-${role}`)
-        console.log(`User joined role room: ${role}`)
       })
 
       socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id)
       })
     })
   }

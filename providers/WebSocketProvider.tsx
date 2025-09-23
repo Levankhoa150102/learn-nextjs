@@ -23,17 +23,26 @@ export function WebSocketProvider({ userId, userRole, children }: WebSocketProvi
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      return;
+    }
+
+
+    // Get the current origin (handles dynamic ports)
+    const socketUrl = process.env.NODE_ENV === 'production' 
+      ? window.location.origin 
+      : window.location.origin;
+
 
     // Initialize socket connection
-    const socket = io(process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000', {
+    const socket = io(socketUrl, {
       path: '/api/socket',
+      transports: ['websocket', 'polling'], 
     });
 
     socketRef.current = socket;
 
     socket.on('connect', () => {
-      console.log('✅ Socket connected:', socket.id);
       setIsConnected(true);
       
       // Join user-specific room
@@ -46,7 +55,6 @@ export function WebSocketProvider({ userId, userRole, children }: WebSocketProvi
     });
 
     socket.on('disconnect', () => {
-      console.log('❌ Socket disconnected');
       setIsConnected(false);
     });
 

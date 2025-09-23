@@ -16,7 +16,6 @@ export default function SocketInitializer() {
     const initSocket = async () => {
       try {
         await fetch('/api/socket');
-        console.log('Socket endpoint initialized');
       } catch (error) {
         console.error('Socket initialization error:', error);
       }

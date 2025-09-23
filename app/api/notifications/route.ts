@@ -130,7 +130,8 @@ export async function POST(request: NextRequest) {
       if (io) {
         // Send to specific users
         targetUsers.forEach((user: User) => {
-          io.to(`user-${user.id}`).emit('new-notification', {
+          const room = `user-${user.id}`;
+          io.to(room).emit('new-notification', {
             id: notification.id,
             title: notification.title,
             message: notification.message,
@@ -145,8 +146,10 @@ export async function POST(request: NextRequest) {
         if (targetRole === 'all') {
           io.emit('new-notification', notification);
         } else {
-          io.to(`role-${targetRole}`).emit('new-notification', notification);
+          const roleRoom = `role-${targetRole}`;
+          io.to(roleRoom).emit('new-notification', notification);
         }
+      } else {
       }
     }
 

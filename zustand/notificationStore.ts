@@ -44,7 +44,8 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       const notifications = await NotificationService.getNotifications();
       const notificationsArray = Array.isArray(notifications) ? notifications : [];
       set({ notifications: notificationsArray, loading: false });
-    } catch {
+    } catch (error) {
+      console.error('❌ Error fetching notifications:', error);
       set({ error: 'Failed to fetch notifications', loading: false });
     }
   },
