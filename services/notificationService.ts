@@ -1,13 +1,8 @@
-export interface CreateNotificationData {
-  title: string;
-  message: string;
-  type: string;
-  targetRole: string;
-}
+import { SendNotificationPayload } from "@/types/notificationType";
 
 export class NotificationService {
   // Create a new notification
-  static async createNotification(data: CreateNotificationData) {
+  static async createNotification(data: SendNotificationPayload) {
     const response = await fetch('/api/notifications', {
       method: 'POST',
       headers: {

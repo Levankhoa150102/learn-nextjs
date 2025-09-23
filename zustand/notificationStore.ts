@@ -44,7 +44,8 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       const notifications = await NotificationService.getNotifications();
       const notificationsArray = Array.isArray(notifications) ? notifications : [];
       set({ notifications: notificationsArray, loading: false });
-    } catch {
+    } catch (error) {
+      console.error('❌ Error fetching notifications:', error);
       set({ error: 'Failed to fetch notifications', loading: false });
     }
   },
@@ -90,7 +91,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  sendNotification: async (data: { title: string; message: string; type: string; targetRole: string }) => {
+  sendNotification: async (data: SendNotificationPayload) => {
     try {
       await NotificationService.createNotification(data);
       await get().fetchNotifications();

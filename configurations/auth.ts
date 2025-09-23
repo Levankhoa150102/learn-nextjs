@@ -32,8 +32,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     updateAge: 24 * 60 * 60,
   },
   callbacks: {
-    async session({ session }) {
-      return session
+    async session({ session, user }) {
+      if (session?.user && user) {
+        session.user.id = user.id;
+        session.user.role = user.role;
+      }
+      return session;
     },
   },
 })

@@ -86,7 +86,7 @@ model Notification {
   title      String
   message    String
   type       String   // 'info', 'warning', 'success', 'error'
-  targetRole String   // 'admin', 'user', 'all' etc.
+  targetRole String   // 'admin', 'user', 'all', 'specific-user' etc.
   senderId   String
   sender     User     @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
   

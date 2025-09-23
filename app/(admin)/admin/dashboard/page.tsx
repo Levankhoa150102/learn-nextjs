@@ -3,8 +3,9 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Card, Statistic, Typography } from 'antd';
 import { UserOutlined, BellOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { NotificationAdmin } from '@/components/NotificationAdmin';
+import { NotificationAdmin } from '@/components/Layout/Header/Notification/NotificationAdmin';
 import AdminLayout from '@/components/Layout/AdminLayout';
+import SocketInitializer from '@/components/socket/SocketInitializer';
 import { useNotificationStore } from '@/zustand/notificationStore';
 import { useUserStore } from '@/zustand/userStore';
 
@@ -85,6 +86,7 @@ export default function AdminDashboard() {
           </Row>
         </div>
       </div>
+      <SocketInitializer />
     </AdminLayout>
   );
 }

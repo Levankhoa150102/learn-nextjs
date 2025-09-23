@@ -1,9 +1,8 @@
 import fromNowTime from '@/utils/fromNowTime';
-import { useNotificationStore } from '@/zustand/notificationStore';
-import { CheckOutlined, CloseOutlined, MessageOutlined, WarningOutlined, EyeOutlined } from '@ant-design/icons';
-import { Avatar, Button, Empty, List, Typography, Space, Tooltip } from 'antd';
+import { Notification, useNotificationStore } from '@/zustand/notificationStore';
+import { CheckOutlined, CloseOutlined, EyeOutlined, MessageOutlined, WarningOutlined } from '@ant-design/icons';
+import { Avatar, Button, Empty, List, Space, Tooltip, Typography } from 'antd';
 import { useState } from 'react';
-import { Notification } from '@/zustand/notificationStore';
 import NotificationViewModal from './NotificationViewModal';
 
 const { Text, Title } = Typography;
@@ -13,6 +12,7 @@ export default function NotificationList() {
   const { notifications, markAsRead, deleteNotification, markAllAsRead } = useNotificationStore();
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
 
   const handleViewNotification = (notification: Notification) => {
     setSelectedNotification(notification);
