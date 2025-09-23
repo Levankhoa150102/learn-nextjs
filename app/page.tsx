@@ -39,7 +39,7 @@ export default function Home() {
       <header className="flex items-center h-[60px] justify-between px-8 py-4 bg-gradient-to-r from-blue-500 to-green-400 shadow">
         <h1 className="text-2xl font-bold text-white">Welcome to the Blog Platform</h1>
         <div>
-          <Dropdown
+          {user ? <Dropdown
             menu={{ items }}
             trigger={['click']}
             placement="bottomRight"
@@ -59,7 +59,24 @@ export default function Home() {
               </div>
               <CaretDownOutlined className={`${dropDownOpen ? 'rotate-180 ' : ''} transition-all ease-in-out duration-300 text-white`} />
             </div>
-          </Dropdown>
+          </Dropdown> :
+            <div className="flex gap-4">
+              <button
+                className="bg-white bg-opacity-80 text-blue-600 font-semibold px-5 py-2 rounded-lg shadow hover:bg-opacity-100 transition"
+                onClick={() => router.push('/login')}
+              >
+                Login
+              </button>
+              <button
+                className="bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+                onClick={() => router.push('/register')}
+              >
+                Register
+              </button>
+            </div>
+          }
+
+
         </div>
       </header>
       <main className="flex items-center justify-center min-h-[calc(100vh-60px)] bg-gradient-to-br from-blue-50 to-green-100 py-12">

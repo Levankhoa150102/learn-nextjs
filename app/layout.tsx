@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import AntdProvider from "@/providers/AntdProvider";
 import { SessionProvider } from "next-auth/react";
+import ClientWebSocketWrapper from "@/components/socket/ClientWebSocketWrapper";
 
 
 
@@ -22,7 +23,9 @@ export default function RootLayout({
         <SessionProvider>
           <AntdProvider>
             <AuthProvider>
-              {children}
+              <ClientWebSocketWrapper>
+                {children}
+              </ClientWebSocketWrapper>
             </AuthProvider>
           </AntdProvider>
         </SessionProvider>

@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, Select, message } from 'antd';
 import { useNotificationStore } from '@/zustand/notificationStore';
+import { SendNotificationPayload } from '@/types/notificationType';
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-interface NotificationFormData {
-  title: string;
-  message: string;
-  type: 'info' | 'warning' | 'success' | 'error';
-  targetRole: string;
-}
 
 export const NotificationAdmin: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { sendNotification } = useNotificationStore();
 
-  const handleSubmit = async (values: NotificationFormData) => {
+  const handleSubmit = async (values: SendNotificationPayload) => {
     setLoading(true);
     try {
       await sendNotification(values);

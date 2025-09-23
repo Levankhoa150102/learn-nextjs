@@ -3,6 +3,22 @@ import { prisma } from '@/configurations/prisma';
 import { auth } from '@/configurations/auth';
 import { User } from '@/types/userType';
 import { UserNotification } from '@/types/notificationType';
+import { Server as SocketIOServer } from 'socket.io';
+
+// Helper function to get Socket.IO instance
+function getSocketServer(): SocketIOServer | null {
+  if (typeof window !== 'undefined') return null; // Client-side
+  
+  try {
+    // Access the global socket server instance
+    const globalForSocket = globalThis as unknown as { 
+      socketServer?: SocketIOServer 
+    };
+    return globalForSocket.socketServer || null;
+  } catch {
+    return null;
+  }
+}
 
 // GET - Fetch notifications for the current user
 export async function GET() {
@@ -108,6 +124,30 @@ export async function POST(request: NextRequest) {
           isDeleted: false
         }))
       });
+
+      // Step 4: Emit real-time notifications via Socket.IO
+      const io = getSocketServer();
+      if (io) {
+        // Send to specific users
+        targetUsers.forEach((user: User) => {
+          io.to(`user-${user.id}`).emit('new-notification', {
+            id: notification.id,
+            title: notification.title,
+            message: notification.message,
+            type: notification.type,
+            isRead: false,
+            createdAt: notification.createdAt,
+            sender: notification.sender
+          });
+        });
+
+        // Also send to role-based rooms
+        if (targetRole === 'all') {
+          io.emit('new-notification', notification);
+        } else {
+          io.to(`role-${targetRole}`).emit('new-notification', notification);
+        }
+      }
     }
 
     return NextResponse.json({ 

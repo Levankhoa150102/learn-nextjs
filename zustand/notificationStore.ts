@@ -90,7 +90,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  sendNotification: async (data: { title: string; message: string; type: string; targetRole: string }) => {
+  sendNotification: async (data: SendNotificationPayload) => {
     try {
       await NotificationService.createNotification(data);
       await get().fetchNotifications();
