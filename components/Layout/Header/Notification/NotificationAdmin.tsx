@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Card, Form, Input, Button, Select, message } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Form, Input, Button, Select, message, Divider } from 'antd';
 import { useNotificationStore } from '@/zustand/notificationStore';
+import { useUserStore } from '@/zustand/userStore';
 import { SendNotificationPayload } from '@/types/notificationType';
 
 const { Option } = Select;
@@ -9,14 +10,40 @@ const { TextArea } = Input;
 export const NotificationAdmin: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [targetType, setTargetType] = useState<'role' | 'user'>('role');
   const { sendNotification } = useNotificationStore();
+  const { users, fetchUsers } = useUserStore();
 
-  const handleSubmit = async (values: SendNotificationPayload) => {
+  // Fetch users when component mounts
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleSubmit = async (values: {
+    title: string;
+    message: string;
+    type: string;
+    targetType: 'role' | 'user';
+    targetRole?: string;
+    targetUserId?: string;
+  }) => {
     setLoading(true);
     try {
-      await sendNotification(values);
+      const payload: SendNotificationPayload = {
+        title: values.title,
+        message: values.message,
+        type: values.type,
+      };
+      if (values.targetType === 'role') {
+        payload.targetRole = values.targetRole;
+      } else {
+        payload.targetUserId = values.targetUserId;
+      }
+
+      await sendNotification(payload);
       message.success('Notification sent successfully!');
       form.resetFields();
+      setTargetType('role');
     } catch {
       message.error('Failed to send notification');
     } finally {
@@ -32,7 +59,13 @@ export const NotificationAdmin: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={{
           type: 'info',
+          targetType: 'role',
           targetRole: 'user'
+        }}
+        onValuesChange={(changedValues) => {
+          if (changedValues.targetType) {
+            setTargetType(changedValues.targetType);
+          }
         }}
       >
         <Form.Item
@@ -67,17 +100,54 @@ export const NotificationAdmin: React.FC = () => {
           </Select>
         </Form.Item>
 
+        <Divider>Target Settings</Divider>
+
         <Form.Item
-          name="targetRole"
-          label="Target Role"
-          rules={[{ required: true, message: 'Please select a target role' }]}
+          name="targetType"
+          label="Send To"
+          rules={[{ required: true, message: 'Please select target type' }]}
         >
-          <Select placeholder="Select target role">
-            <Option value="user">Users</Option>
-            <Option value="admin">Admins</Option>
-            <Option value="all">All Users</Option>
+          <Select placeholder="Select target type">
+            <Option value="role">Role-based (All users with specific role)</Option>
+            <Option value="user">Specific User</Option>
           </Select>
         </Form.Item>
+
+        {targetType === 'role' && (
+          <Form.Item
+            name="targetRole"
+            label="Target Role"
+            rules={[{ required: true, message: 'Please select a target role' }]}
+          >
+            <Select placeholder="Select target role">
+              <Option value="user">Users</Option>
+              <Option value="admin">Admins</Option>
+              <Option value="all">All Users</Option>
+            </Select>
+          </Form.Item>
+        )}
+
+        {targetType === 'user' && (
+          <Form.Item
+            name="targetUserId"
+            label="Select User"
+            rules={[{ required: true, message: 'Please select a user' }]}
+          >
+            <Select
+              placeholder="Select a specific user"
+              showSearch
+              filterOption={(input, option) =>
+                (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
+              }
+            >
+              {users.map((user) => (
+                <Option key={user.id} value={user.id}>
+                  {user.name || user.email} ({user.role})
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
 
         <Form.Item>
           <Button

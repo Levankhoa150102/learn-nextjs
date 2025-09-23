@@ -79,10 +79,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, message, type, targetRole } = await request.json();
+    const { title, message, type, targetRole, targetUserId } = await request.json();
 
-    if (!title || !message || !type || !targetRole) {
+
+    if (!title || !message || !type) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Validate targeting: either targetRole or targetUserId must be provided
+    if (!targetRole && !targetUserId) {
+      return NextResponse.json({ error: 'Either targetRole or targetUserId must be provided' }, { status: 400 });
+    }
+
+    if (targetRole && targetUserId) {
+      return NextResponse.json({ error: 'Cannot specify both targetRole and targetUserId' }, { status: 400 });
     }
 
     // Step 1: Create the notification
@@ -91,7 +101,7 @@ export async function POST(request: NextRequest) {
         title,
         message,
         type,
-        targetRole,
+        targetRole: targetRole || 'specific-user', // Use 'specific-user' when targeting individual users
         senderId: session.user.id,
       },
       include: {
@@ -101,13 +111,28 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Step 2: Get target users based on role
+    // Step 2: Get target users based on role or specific user
     let targetUsers;
-    if (targetRole === 'all') {
+    
+    if (targetUserId) {
+      // Target specific user
+      const targetUser = await prisma.user.findUnique({
+        where: { id: targetUserId },
+        select: { id: true }
+      });
+      
+      if (!targetUser) {
+        return NextResponse.json({ error: 'Target user not found' }, { status: 404 });
+      }
+      
+      targetUsers = [targetUser];
+    } else if (targetRole === 'all') {
+      // Target all users
       targetUsers = await prisma.user.findMany({
         select: { id: true }
       });
     } else {
+      // Target users by role
       targetUsers = await prisma.user.findMany({
         where: { role: targetRole },
         select: { id: true }
@@ -142,14 +167,17 @@ export async function POST(request: NextRequest) {
           });
         });
 
-        // Also send to role-based rooms
-        if (targetRole === 'all') {
-          io.emit('new-notification', notification);
-        } else {
-          const roleRoom = `role-${targetRole}`;
-          io.to(roleRoom).emit('new-notification', notification);
+        // Also send to role-based rooms (only if targeting by role)
+        if (targetRole) {
+          if (targetRole === 'all') {
+            io.emit('new-notification', notification);
+          } else {
+            const roleRoom = `role-${targetRole}`;
+            io.to(roleRoom).emit('new-notification', notification);
+          }
         }
       } else {
+        console.log('Socket.IO server not available');
       }
     }
 

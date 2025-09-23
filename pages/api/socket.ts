@@ -38,15 +38,18 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
 
       // Join user to their specific room
       socket.on('join-user-room', (userId: string) => {
-        socket.join(`user-${userId}`)
+        const userRoom = `user-${userId}`;
+        socket.join(userRoom);
       })
 
       // Join admin/role-based rooms
       socket.on('join-role-room', (role: string) => {
-        socket.join(`role-${role}`)
+        const roleRoom = `role-${role}`;
+        socket.join(roleRoom);
       })
 
       socket.on('disconnect', () => {
+        console.log('Socket disconnected:', socket.id);
       })
     })
   }

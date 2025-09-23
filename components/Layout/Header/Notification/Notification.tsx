@@ -28,6 +28,7 @@ export default function Notification() {
       
       // Refresh the notification list to get the latest data
       fetchNotifications().then(() => {
+        console.log('✅ fetchNotifications completed in main component');
       }).catch((error) => {
         console.error('❌ fetchNotifications failed in main component:', error);
       });

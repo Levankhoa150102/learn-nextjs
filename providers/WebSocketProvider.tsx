@@ -58,12 +58,14 @@ export function WebSocketProvider({ userId, userRole, children }: WebSocketProvi
       setIsConnected(false);
     });
 
-    socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
+    socket.on('connect_error', () => {
       setIsConnected(false);
     });
 
     // Listen for real-time notifications
+    socket.on('new-notification', (notification) => {
+      console.log('User:', userId, 'received notification:', notification);
+    });
     socket.on('new-notification', (notification) => {
       console.log('📢 New notification received:', notification);
     });
