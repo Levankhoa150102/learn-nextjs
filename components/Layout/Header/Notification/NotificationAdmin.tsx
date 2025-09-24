@@ -6,6 +6,7 @@ import { SendNotificationPayload } from '@/types/notificationType';
 
 const { Option } = Select;
 const { TextArea } = Input;
+type handleSubmitPayload = SendNotificationPayload & { targetType: 'role' | 'user' };
 
 export const NotificationAdmin: React.FC = () => {
   const [form] = Form.useForm();
@@ -19,14 +20,7 @@ export const NotificationAdmin: React.FC = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleSubmit = async (values: {
-    title: string;
-    message: string;
-    type: string;
-    targetType: 'role' | 'user';
-    targetRole?: string;
-    targetUserId?: string;
-  }) => {
+  const handleSubmit = async (values: handleSubmitPayload) => {
     setLoading(true);
     try {
       const payload: SendNotificationPayload = {

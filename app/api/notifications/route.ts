@@ -1,18 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/configurations/prisma';
 import { auth } from '@/configurations/auth';
-import { User } from '@/types/userType';
-import { UserNotification } from '@/types/notificationType';
+import { prisma } from '@/configurations/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 import { Server as SocketIOServer } from 'socket.io';
 
 // Helper function to get Socket.IO instance
 function getSocketServer(): SocketIOServer | null {
   if (typeof window !== 'undefined') return null; // Client-side
-  
+
   try {
     // Access the global socket server instance
-    const globalForSocket = globalThis as unknown as { 
-      socketServer?: SocketIOServer 
+    const globalForSocket = globalThis as unknown as {
+      socketServer?: SocketIOServer
     };
     return globalForSocket.socketServer || null;
   } catch {
@@ -51,12 +49,12 @@ export async function GET() {
     });
 
     // Transform the data to match frontend expectations
-    const notifications = userNotifications.map((un: UserNotification) => ({
+    const notifications = userNotifications.map((un) => ({
       id: un.notification.id,
       title: un.notification.title,
       message: un.notification.message,
       type: un.notification.type,
-      targetRole: un.notification.targetRole,
+      targetRole: un.notification.targetRole ?? '', // Ensure string, fallback to empty string
       isRead: un.isRead, // From UserNotification table
       createdAt: un.notification.createdAt,
       updatedAt: un.notification.updatedAt,
@@ -113,18 +111,18 @@ export async function POST(request: NextRequest) {
 
     // Step 2: Get target users based on role or specific user
     let targetUsers;
-    
+
     if (targetUserId) {
       // Target specific user
       const targetUser = await prisma.user.findUnique({
         where: { id: targetUserId },
         select: { id: true }
       });
-      
+
       if (!targetUser) {
         return NextResponse.json({ error: 'Target user not found' }, { status: 404 });
       }
-      
+
       targetUsers = [targetUser];
     } else if (targetRole === 'all') {
       // Target all users
@@ -142,7 +140,7 @@ export async function POST(request: NextRequest) {
     // Step 3: Create UserNotification records for each target user
     if (targetUsers.length > 0) {
       await prisma.userNotification.createMany({
-        data: targetUsers.map((user: User) => ({
+        data: targetUsers.map((user: { id: string }) => ({
           userId: user.id,
           notificationId: notification.id,
           isRead: false,
@@ -154,7 +152,7 @@ export async function POST(request: NextRequest) {
       const io = getSocketServer();
       if (io) {
         // Send to specific users
-        targetUsers.forEach((user: User) => {
+        targetUsers.forEach((user: { id: string }) => {
           const room = `user-${user.id}`;
           io.to(room).emit('new-notification', {
             id: notification.id,
@@ -181,7 +179,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       notification,
       recipientCount: targetUsers.length
     }, { status: 201 });
